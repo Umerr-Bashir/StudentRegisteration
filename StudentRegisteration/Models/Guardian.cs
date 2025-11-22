@@ -1,8 +1,13 @@
-﻿namespace StudentRegisteration.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StudentRegisteration.Models
 {
     public class Guardian
     {
         public Guid Id { get; set; }
+        public Guid StudentId { get; set; }
+
+        [ForeignKey("StudentId")]
         public Student Student { get; set; }
         public string FatherName { get; set; }
         public string FatherCNIC { get; set; }

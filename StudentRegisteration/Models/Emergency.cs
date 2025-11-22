@@ -1,11 +1,16 @@
-﻿namespace StudentRegisteration.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace StudentRegisteration.Models
 {
     public class Emergency
     {
         public Guid Id { get; set; }
+        public Guid StudentId { get; set; }
+
+        [ForeignKey("StudentId")]
         public Student Student { get; set; }
-        public int? EmergencyContactName { get; set; }
-        public int? EmergencyContactRelation { get; set; }
-        public int? EmergencyContactPhone { get; set; }
+        public string? EmergencyContactName { get; set; }
+        public string? EmergencyContactRelation { get; set; }
+        public string? EmergencyContactPhone { get; set; }
     }
 }
