@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudentRegisteration.DTOs;
 using StudentRegisteration.DTOs.StudentDTO;
 using StudentRegisteration.Services;
 using System.Reflection.Metadata.Ecma335;
@@ -18,25 +19,25 @@ namespace StudentRegisteration.Controllers
         }
 
         [HttpGet("GetAllStudents")]
-        public async Task<ActionResult<List<StudentResponseDTO>>> GetAllStudents()
+        public async Task<ActionResult<ApiResponse<List<StudentResponseDTO>>>> GetAllStudents()
         {
             var response = await _studentService.GetAllAsync();
-            if (response == null)
+            if (response.StatusCode != 200)
             {
-                return BadRequest("No Response from Server.");
+                return StatusCode((int)response.StatusCode, response);
             }
             return Ok(response);
         }
 
         [HttpGet("GetStudentById/{id}")]
-        public async Task<ActionResult<StudentResponseDTO>> GetStudentById(Guid id)
+        public async Task<ActionResult<ApiResponse<StudentResponseDTO>>> GetStudentById(Guid id)
         {
             if (id != Guid.Empty)
             {
                 var response = await _studentService.GetById(id);
-                if (response == null)
+                if (response.StatusCode != 200)
                 {
-                    return BadRequest("No Response from Server.");
+                    return StatusCode((int)response.StatusCode, response);
                 }
                 return Ok(response);
             }
@@ -47,14 +48,14 @@ namespace StudentRegisteration.Controllers
         }
 
         [HttpPost("CreateStudent")]
-        public async Task<ActionResult<bool>> CreateStudent(StudentCreateDTO student)
+        public async Task<ActionResult<ApiResponse<StudentResponseDTO>>> CreateStudent(StudentCreateDTO student)
         {
             if (student != null)
             {
                 var response = await _studentService.CreateAsync(student);
-                if (!response)
+                if (response.StatusCode != 200)
                 {
-                    return false;
+                    return StatusCode((int)response.StatusCode, response);
                 }
                 return Ok(response);
             }
@@ -65,14 +66,14 @@ namespace StudentRegisteration.Controllers
         }
 
         [HttpPost("UpdateStudent/{id}")]
-        public async Task<ActionResult<StudentResponseDTO>> UpdateStudent(Guid id,StudentCreateDTO student)
+        public async Task<ActionResult<ApiResponse<StudentResponseDTO>>> UpdateStudent(Guid id, StudentCreateDTO student)
         {
             if (student != null && id != Guid.Empty) {
 
                 var response = await _studentService.UpdateAsync(id, student);
-                if (response == null)
+                if (response.StatusCode != 200)
                 {
-                    return BadRequest("No Response from Server.");
+                    return StatusCode((int)response.StatusCode, response);
                 }
                 return Ok(response);
             }
@@ -83,13 +84,13 @@ namespace StudentRegisteration.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        public async Task<ActionResult<ApiResponse<ConfirmationResponse>>> DeleteAsync(Guid id)
         {
             if (id != Guid.Empty) {
                 var response = await _studentService.DeleteAsync(id);
-                if (!response)
+                if (response.StatusCode!=200)
                 {
-                    return false;
+                    return StatusCode((int)response.StatusCode, response);
                 }
                 return Ok(response);
             }

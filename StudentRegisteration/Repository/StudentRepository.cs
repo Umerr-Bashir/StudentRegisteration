@@ -45,29 +45,18 @@ namespace StudentRegisteration.Repository
             return res;
         }
 
-        public async Task<bool> CreateAsync(StudentCreateDTO student)
+        public async Task<Student> CreateAsync(Student student)
         {
-            if (student != null) {
-                if (_mapper == null) throw new Exception("_mapper is NULL");
-
-                var studentMapped = _mapper.Map<Student>(student);
-                studentMapped.FullName = student.FirstName +" "+ student.LastName;
-                if (studentMapped == null) throw new Exception("studentMapped is NULL");
-                await _context.Students.AddAsync(studentMapped);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-            
+            student.FullName = student.FirstName + " " + student.LastName;
+            await _context.Students.AddAsync(student);
+            await _context.SaveChangesAsync();
+            return student;
         }
-        public async Task<bool> UpdateAsync(Student student)
+        public async Task<Student> UpdateAsync(Student student)
         {
             _context.Students.Update(student);
             await _context.SaveChangesAsync();
-            return true;
+            return student; 
         }
 
         public async Task<bool> DeleteAsync(Student student)

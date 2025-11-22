@@ -7,8 +7,8 @@ namespace StudentRegisteration.Repository
     {
         Task<List<Student>> GetAllAsync();
         Task<Student> GetById(Guid id);
-        Task<bool> CreateAsync(StudentCreateDTO student);
-        Task<bool> UpdateAsync(Student student);
+        Task<Student> CreateAsync(Student student);
+        Task<Student> UpdateAsync(Student student);
         Task<bool> DeleteAsync(Student student);
     }
 }

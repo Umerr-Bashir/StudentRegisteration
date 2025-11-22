@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using StudentRegisteration.Data;
+using StudentRegisteration.DTOs;
 using StudentRegisteration.DTOs.StudentDTO;
 using StudentRegisteration.Models;
 
@@ -16,50 +17,65 @@ namespace StudentRegisteration.Services
             _mapper = mapper;
         }
 
-        public async Task<List<StudentResponseDTO>> GetAllAsync()
+        // GetAll
+        public async Task<ApiResponse<List<StudentResponseDTO>>> GetAllAsync()
         {
             var response = await _uow.Students.GetAllAsync();
             if (response == null) {
-                return null;
+                return new ApiResponse<List<StudentResponseDTO>>(200, "No Data Found!");
             }
-            return _mapper.Map<List<StudentResponseDTO>>(response);
-        }
 
-        public async Task<StudentResponseDTO> GetById(Guid id)
+            var mappedRes = _mapper.Map<List<StudentResponseDTO>>(response);
+            return new ApiResponse<List<StudentResponseDTO>>(200, mappedRes);
+        }
+        // GEtById
+
+        public async Task<ApiResponse<StudentResponseDTO>> GetById(Guid id)
         {
             var response = await _uow.Students.GetById(id);
             if (response == null) {
-                return null;
+                return new ApiResponse<StudentResponseDTO>(200, "No Data Found!");
             }
-            return _mapper.Map<StudentResponseDTO>(response);
+            var mappedRes =  _mapper.Map<StudentResponseDTO>(response);
+            return new ApiResponse<StudentResponseDTO>(200, mappedRes);
         }
-        public async Task<bool> CreateAsync(StudentCreateDTO student)
+        // Create
+        public async Task<ApiResponse<StudentResponseDTO>> CreateAsync(StudentCreateDTO student)
         {
-            var response = await _uow.Students.CreateAsync(student);
-            if (response == false)
+            var stu = _mapper.Map<Student>(student);
+
+            var response = await _uow.Students.CreateAsync(stu);
+            if (response == null)
             {
-                return false;
+                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
             } 
-            return true;
+            return new ApiResponse<StudentResponseDTO>(200, _mapper.Map<StudentResponseDTO>(response));
         }
 
-        public async Task<StudentResponseDTO> UpdateAsync(Guid id, StudentCreateDTO student)
-        {
+        //Update
+        public async Task<ApiResponse<StudentResponseDTO>> UpdateAsync(Guid id, StudentCreateDTO student)
+        { 
             var myStudent = await _uow.Students.GetById(id);
-            var mappedStudent = _mapper.Map<Student>(student);
             var response = await _uow.Students.UpdateAsync(myStudent);
-            return _mapper.Map<StudentResponseDTO>(student);
+            if(response == null)
+            {
+                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
+            }
+            var mappedStudent = _mapper.Map<StudentResponseDTO>(response);
+
+            return new ApiResponse<StudentResponseDTO>(200, mappedStudent); 
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        // Delete
+        public async Task<ApiResponse<ConfirmationResponse>> DeleteAsync(Guid id)
         {
             var myStudent = await _uow.Students.GetById(id);
             var response = await _uow.Students.DeleteAsync(myStudent);
             if (response == false)
             {
-                return false;
+                return new ApiResponse<ConfirmationResponse>(400, "Unable to Safe Delete Record. ");
             }
-            return true;
+            return new ApiResponse<ConfirmationResponse>(200, "Record Safe Deleted Successfully.");
         }
     }
 }
