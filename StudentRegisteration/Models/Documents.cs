@@ -4,12 +4,12 @@ namespace StudentRegisteration.Models
 {
     public class Documents
     {
-        public IFormFile CNICFrontImageUrl { get; set; }
-        public IFormFile CNICBackImageUrl { get; set; }
-        public IFormFile MatricCertificateUrl { get; set; }
-        public IFormFile IntermediateCertificateUrl { get; set; }
-        public IFormFile BachelorCertificateUrl { get; set; }
-        public List<IFormFile> ExperienceCertificateUrls { get; set; }
+        public string CNICFrontImageUrl { get; set; }
+        public string CNICBackImageUrl { get; set; }
+        public string MatricCertificateUrl { get; set; }
+        public string IntermediateCertificateUrl { get; set; }
+        public string BachelorCertificateUrl { get; set; }
+        public List<string> ExperienceCertificateUrls { get; set; }
         public Guid StudentId { get; set; }
 
         [ForeignKey("StudentId")]
