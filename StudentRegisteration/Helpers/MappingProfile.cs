@@ -8,8 +8,15 @@ namespace StudentRegisteration.Helpers
     {
         public MappingProfile()
         {
-            CreateMap<StudentCreateDTO, Student>()
-                .ForMember(dest => dest)
+            CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<EmergencyContactDto, Emergency>().ReverseMap();
+            CreateMap<GuardianDto, Guardian>().ReverseMap();
+            CreateMap<EducationDto, Education>().ReverseMap();
+            CreateMap<WorkExperienceDto, WorkExperience>().ReverseMap();
+            CreateMap<ContactDto, Contact>().ReverseMap();
+            CreateMap<StudentCreateDTO, Student>().ReverseMap();
+            CreateMap<StudentResponseDTO, Student>().ReverseMap();
+            CreateMap<Student, StudentResponseDTO>().ReverseMap();
         }
     }
 }
