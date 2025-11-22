@@ -51,9 +51,8 @@ namespace StudentRegisteration.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PostalCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -64,7 +63,8 @@ namespace StudentRegisteration.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });
@@ -96,9 +96,59 @@ namespace StudentRegisteration.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("StudentRegisteration.Models.Education", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BoardOrUniversity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompletionStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DegreeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Grade")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstituteName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MajorSubject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PassingYear")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Education");
                 });
 
             modelBuilder.Entity("StudentRegisteration.Models.Emergency", b =>
@@ -107,21 +157,22 @@ namespace StudentRegisteration.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("EmergencyContactName")
-                        .HasColumnType("int");
+                    b.Property<string>("EmergencyContactName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EmergencyContactPhone")
-                        .HasColumnType("int");
+                    b.Property<string>("EmergencyContactPhone")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EmergencyContactRelation")
-                        .HasColumnType("int");
+                    b.Property<string>("EmergencyContactRelation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Emergencies");
                 });
@@ -169,7 +220,8 @@ namespace StudentRegisteration.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId")
+                        .IsUnique();
 
                     b.ToTable("Guardians");
                 });
@@ -187,9 +239,8 @@ namespace StudentRegisteration.Migrations
                     b.Property<DateOnly>("CNICExpiry")
                         .HasColumnType("date");
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("FatherName")
                         .IsRequired()
@@ -215,20 +266,56 @@ namespace StudentRegisteration.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfileImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("StudentRegisteration.Models.WorkExperience", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsCurrentJob")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("WorkExperience");
+                });
+
             modelBuilder.Entity("StudentRegisteration.Models.Address", b =>
                 {
                     b.HasOne("StudentRegisteration.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
+                        .WithOne("Address")
+                        .HasForeignKey("StudentRegisteration.Models.Address", "StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -238,7 +325,18 @@ namespace StudentRegisteration.Migrations
             modelBuilder.Entity("StudentRegisteration.Models.Contact", b =>
                 {
                     b.HasOne("StudentRegisteration.Models.Student", "Student")
-                        .WithMany()
+                        .WithOne("Contact")
+                        .HasForeignKey("StudentRegisteration.Models.Contact", "StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentRegisteration.Models.Education", b =>
+                {
+                    b.HasOne("StudentRegisteration.Models.Student", "Student")
+                        .WithMany("Education")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -249,8 +347,8 @@ namespace StudentRegisteration.Migrations
             modelBuilder.Entity("StudentRegisteration.Models.Emergency", b =>
                 {
                     b.HasOne("StudentRegisteration.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
+                        .WithOne("Emergency")
+                        .HasForeignKey("StudentRegisteration.Models.Emergency", "StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -260,12 +358,42 @@ namespace StudentRegisteration.Migrations
             modelBuilder.Entity("StudentRegisteration.Models.Guardian", b =>
                 {
                     b.HasOne("StudentRegisteration.Models.Student", "Student")
-                        .WithMany()
+                        .WithOne("Guardian")
+                        .HasForeignKey("StudentRegisteration.Models.Guardian", "StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentRegisteration.Models.WorkExperience", b =>
+                {
+                    b.HasOne("StudentRegisteration.Models.Student", "Student")
+                        .WithMany("WorkExperience")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentRegisteration.Models.Student", b =>
+                {
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Contact")
+                        .IsRequired();
+
+                    b.Navigation("Education");
+
+                    b.Navigation("Emergency")
+                        .IsRequired();
+
+                    b.Navigation("Guardian")
+                        .IsRequired();
+
+                    b.Navigation("WorkExperience");
                 });
 #pragma warning restore 612, 618
         }
