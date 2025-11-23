@@ -16,7 +16,7 @@
         public ContactDto Contact { get; set; }
         public GuardianDto Guardian { get; set; }
         public EmergencyContactDto Emergency { get; set; }
-        public DocumentsDto Documents { get; set; }
+        public DocumentsCreateDto Documents { get; set; }
         public List<EducationDto> Education { get; set; }
         public List<WorkExperienceDto> WorkExperience { get; set; }
     }
@@ -75,7 +75,7 @@
         public bool IsCurrentJob { get; set; }
         public string JobDescription { get; set; }
     }
-    public class DocumentsDto
+    public class DocumentsCreateDto
     {
         public IFormFile CNICFrontImageUrl { get; set; }
         public IFormFile CNICBackImageUrl { get; set; }

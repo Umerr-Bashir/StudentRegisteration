@@ -22,8 +22,17 @@ namespace StudentRegisteration.DTOs.StudentDTO
         public ContactDto Contact { get; set; }
         public GuardianDto Guardian { get; set; }
         public EmergencyContactDto Emergency { get; set; }
-        public DocumentsDto Documents { get; set; }
+        public DocumentsResponseDto Documents { get; set; }
         public List<EducationDto> Education { get; set; }
         public List<WorkExperienceDto> WorkExperience { get; set; }
+    }
+    public class DocumentsResponseDto
+    {
+        public string CNICFrontImageUrl { get; set; } 
+        public string CNICBackImageUrl { get; set; }
+        public string MatricCertificateUrl { get; set; }
+        public string IntermediateCertificateUrl { get; set; }
+        public string BachelorCertificateUrl { get; set; }
+        public List<string> ExperienceCertificateUrls { get; set; }
     }
 }

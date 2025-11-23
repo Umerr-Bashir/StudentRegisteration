@@ -19,6 +19,7 @@
         public Contact Contact { get; set; }
         public Guardian Guardian { get; set; }
         public Emergency Emergency { get; set; }
+        public Documents Documents { get; set; }
         public List<Education> Education { get; set; }
         public List<WorkExperience> WorkExperience { get; set; }
     }

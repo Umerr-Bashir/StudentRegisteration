@@ -27,6 +27,7 @@ namespace StudentRegisteration.Repository
                 .Include(e=>e.Emergency)
                 .Include(d=>d.Education)
                 .Include(w=>w.WorkExperience)
+                .Include(d=>d.Documents)
                 .ToListAsync();
             return res;
         }
@@ -39,6 +40,7 @@ namespace StudentRegisteration.Repository
                 .Include(g => g.Guardian)
                 .Include(e => e.Emergency)
                 .Include(d => d.Education)
+                .Include(d => d.Documents)
                 .Include(w => w.WorkExperience).FirstOrDefaultAsync(s=>s.Id==id);
             if (res==null)
                 return null;

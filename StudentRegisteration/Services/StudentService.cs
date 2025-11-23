@@ -45,72 +45,58 @@ namespace StudentRegisteration.Services
         // Create
         public async Task<ApiResponse<StudentResponseDTO>> CreateAsync(StudentCreateDTO student)
         {
-            
-            var stu = _mapper.Map<Student>(student);
 
-            var response = await _uow.Students.CreateAsync(stu);
-            if (response == null)
-                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
+            var studentId = Guid.NewGuid();
 
-            async Task<string> SaveFile(IFormFile file, string folder, string studentId)
-            {
-                var folderPath = Path.Combine(_env.WebRootPath, folder, studentId);
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-                var fullPath = Path.Combine(folderPath, fileName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                return $"/{folder}/{studentId}/{fileName}";
-            }
+            var newRes = _mapper.Map<Student>(student);
+            newRes.Id = studentId;
 
             if (student.ProfileImageUrl != null)
             {
-                response.ProfileImageUrl = await SaveFile(student.ProfileImageUrl, "ProfileImages", response.Id.ToString());
+                newRes.ProfileImageUrl = await SaveFile(student.ProfileImageUrl, "ProfileImages", studentId.ToString());
+
             }
 
             if (student.Documents != null)
             {
-                var docs = new Documents
+                newRes.Documents = new Documents
                 {
-                    StudentId = response.Id,
+                    StudentId = studentId,
                     ExperienceCertificateUrls = new List<string>()
                 };
-
+                
                 if (student.Documents.CNICFrontImageUrl != null)
-                    docs.CNICFrontImageUrl = await SaveFile(student.Documents.CNICFrontImageUrl, "Documents", response.Id.ToString());
+                    newRes.Documents.CNICFrontImageUrl = await SaveFile(student.Documents.CNICFrontImageUrl, "Documents", studentId.ToString());
 
                 if (student.Documents.CNICBackImageUrl != null)
-                    docs.CNICBackImageUrl = await SaveFile(student.Documents.CNICBackImageUrl, "Documents", response.Id.ToString());
+                    newRes.Documents.CNICBackImageUrl = await SaveFile(student.Documents.CNICBackImageUrl, "Documents", studentId.ToString());
 
                 if (student.Documents.MatricCertificateUrl != null)
-                    docs.MatricCertificateUrl = await SaveFile(student.Documents.MatricCertificateUrl, "Documents", response.Id.ToString());
+                    newRes.Documents.MatricCertificateUrl = await SaveFile(student.Documents.MatricCertificateUrl, "Documents", studentId.ToString());
 
                 if (student.Documents.IntermediateCertificateUrl != null)
-                    docs.IntermediateCertificateUrl = await SaveFile(student.Documents.IntermediateCertificateUrl, "Documents", response.Id.ToString());
+                    newRes.Documents.IntermediateCertificateUrl = await SaveFile(student.Documents.IntermediateCertificateUrl, "Documents", studentId.ToString());
 
                 if (student.Documents.BachelorCertificateUrl != null)
-                    docs.BachelorCertificateUrl = await SaveFile(student.Documents.BachelorCertificateUrl, "Documents", response.Id.ToString());
+                    newRes.Documents.BachelorCertificateUrl = await SaveFile(student.Documents.BachelorCertificateUrl, "Documents", studentId.ToString());
 
                 if (student.Documents.ExperienceCertificateUrls != null)
                 {
                     foreach (var file in student.Documents.ExperienceCertificateUrls)
                     {
-                        var url = await SaveFile(file, "Documents", response.Id.ToString());
-                        docs.ExperienceCertificateUrls.Add(url);
+                        var url = await SaveFile(file, "Documents", studentId.ToString());
+                        newRes.Documents.ExperienceCertificateUrls.Add(url);
                     }
                 }
 
             }
-            var mappedStudent = _mapper.Map<StudentResponseDTO>(response);
-            if (student.Documents != null)
-                mappedStudent.Documents = _mapper.Map<DocumentsDto>(student.Documents);
 
+            var response = await _uow.Students.CreateAsync(newRes);
+            if (response == null)
+                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
+
+            var mappedStudent = _mapper.Map<StudentResponseDTO>(response);
+                
             return new ApiResponse<StudentResponseDTO>(200, mappedStudent);
         }
 
@@ -139,6 +125,24 @@ namespace StudentRegisteration.Services
                 return new ApiResponse<ConfirmationResponse>(400, "Unable to Safe Delete Record. ");
             }
             return new ApiResponse<ConfirmationResponse>(200, "Record Safe Deleted Successfully.");
+        }
+
+
+        public async Task<string> SaveFile(IFormFile file, string folder, string studentId)
+        {
+            var folderPath = Path.Combine(_env.WebRootPath, folder, studentId);
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            var fullPath = Path.Combine(folderPath, fileName);
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"/{folder}/{studentId}/{fileName}";
         }
     }
 }
