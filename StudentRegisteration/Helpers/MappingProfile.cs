@@ -17,6 +17,7 @@ namespace StudentRegisteration.Helpers
             CreateMap<StudentCreateDTO, Student>().ReverseMap();
             CreateMap<StudentResponseDTO, Student>().ReverseMap();
             CreateMap<Student, StudentResponseDTO>().ReverseMap();
+            CreateMap<DocumentsDto, Documents>().ReverseMap();
         }
     }
 }

@@ -11,7 +11,7 @@
         public string Nationality { get; set; }
         public string CNIC { get; set; }
         public DateOnly CNICExpiry { get; set; }
-        //public IFormFile ProfileImageUrl { get; set; }
+        public IFormFile ProfileImageUrl { get; set; }
         public AddressDto Address { get; set; }
         public ContactDto Contact { get; set; }
         public GuardianDto Guardian { get; set; }

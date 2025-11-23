@@ -20,6 +20,7 @@ namespace StudentRegisteration.Data
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Emergency> Emergencies { get; set; }
         public DbSet<Guardian> Guardians { get; set; }
+        public DbSet<Documents> Documents { get; set; }
 
     }
 }

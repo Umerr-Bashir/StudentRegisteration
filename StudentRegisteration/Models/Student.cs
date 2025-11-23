@@ -13,7 +13,7 @@
         public string CNIC { get; set; }
         public DateOnly CNICExpiry { get; set; }
         public bool isDeleted { get; set; }
-        //public string ProfileImageUrl { get; set; }
+        public string ProfileImageUrl { get; set; }
 
         public Address Address { get; set; }
         public Contact Contact { get; set; }

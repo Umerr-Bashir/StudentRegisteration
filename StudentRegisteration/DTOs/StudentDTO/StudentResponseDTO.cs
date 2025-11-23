@@ -16,7 +16,7 @@ namespace StudentRegisteration.DTOs.StudentDTO
         public DateOnly CNICExpiry { get; set; }
         public bool isDeleted { get; set; }
 
-        //public string ProfileImageUrl { get; set; }
+        public string ProfileImageUrl { get; set; }
 
         public AddressDto Address { get; set; }
         public ContactDto Contact { get; set; }
