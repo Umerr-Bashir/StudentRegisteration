@@ -103,16 +103,27 @@ namespace StudentRegisteration.Services
 
         //Update
         public async Task<ApiResponse<StudentResponseDTO>> UpdateAsync(Guid id, StudentCreateDTO student)
-        { 
+        {
             var myStudent = await _uow.Students.GetById(id);
-            var response = await _uow.Students.UpdateAsync(myStudent);
-            if(response == null)
-            {
-                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
-            }
-            var mappedStudent = _mapper.Map<StudentResponseDTO>(response);
 
-            return new ApiResponse<StudentResponseDTO>(200, mappedStudent); 
+            if (myStudent == null)
+            {
+                return new ApiResponse<StudentResponseDTO>(404, "Student not found.");
+            }
+
+            _mapper.Map(student, myStudent);
+
+            
+            var responseEntity = await _uow.Students.UpdateAsync(myStudent);
+
+            if (responseEntity == null)
+            {
+                return new ApiResponse<StudentResponseDTO>(500, "Update failed or no response from server.");
+            }
+
+            var mappedStudent = _mapper.Map<StudentResponseDTO>(responseEntity);
+
+            return new ApiResponse<StudentResponseDTO>(200, mappedStudent);
         }
 
         // Delete
