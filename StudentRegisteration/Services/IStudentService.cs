@@ -8,6 +8,7 @@ namespace StudentRegisteration.Services
         Task<ApiResponse<List<StudentResponseDTO>>> GetAllAsync();
         Task<ApiResponse<StudentResponseDTO>> GetById(Guid id);
         Task<ApiResponse<StudentResponseDTO>> CreateAsync(StudentCreateDTO student);
+        Task<ApiResponse<DocumentsResponseDto>> UploadAsync(StudentUploadDto studentDocs);
         Task<ApiResponse<StudentResponseDTO>> UpdateAsync(Guid id, StudentCreateDTO student);
         Task<ApiResponse<ConfirmationResponse>> DeleteAsync(Guid id);
     }

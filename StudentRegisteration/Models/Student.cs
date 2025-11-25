@@ -13,14 +13,14 @@
         public string CNIC { get; set; }
         public DateOnly CNICExpiry { get; set; }
         public bool isDeleted { get; set; }
-        public string ProfileImageUrl { get; set; }
+        //public string ProfileImageUrl { get; set; }
 
         public Address Address { get; set; }
         public Contact Contact { get; set; }
         public Guardian Guardian { get; set; }
         public Emergency Emergency { get; set; }
         public Documents Documents { get; set; }
-        public List<Education> Education { get; set; }
-        public List<WorkExperience> WorkExperience { get; set; }
+        public List<Education> Education { get; set; } = new List<Education>();
+        public List<WorkExperience> WorkExperience { get; set; } = new List<WorkExperience>();
     }
 }

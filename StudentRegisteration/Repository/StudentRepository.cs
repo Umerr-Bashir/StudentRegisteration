@@ -54,6 +54,13 @@ namespace StudentRegisteration.Repository
             await _context.SaveChangesAsync();
             return student;
         }
+
+        public async Task<Documents> UploadDocsAsync(Documents documents)
+        {
+            await _context.Documents.AddAsync(documents);
+            await _context.SaveChangesAsync();
+            return documents;
+        }
         public async Task<Student> UpdateAsync(Student student)
         {
             _context.Students.Update(student);

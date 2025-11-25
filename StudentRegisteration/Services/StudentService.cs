@@ -51,45 +51,7 @@ namespace StudentRegisteration.Services
             var newRes = _mapper.Map<Student>(student);
             newRes.Id = studentId;
 
-            if (student.ProfileImageUrl != null)
-            {
-                newRes.ProfileImageUrl = await SaveFile(student.ProfileImageUrl, "ProfileImages", studentId.ToString());
-
-            }
-
-            if (student.Documents != null)
-            {
-                newRes.Documents = new Documents
-                {
-                    StudentId = studentId,
-                    ExperienceCertificateUrls = new List<string>()
-                };
-                
-                if (student.Documents.CNICFrontImageUrl != null)
-                    newRes.Documents.CNICFrontImageUrl = await SaveFile(student.Documents.CNICFrontImageUrl, "Documents", studentId.ToString());
-
-                if (student.Documents.CNICBackImageUrl != null)
-                    newRes.Documents.CNICBackImageUrl = await SaveFile(student.Documents.CNICBackImageUrl, "Documents", studentId.ToString());
-
-                if (student.Documents.MatricCertificateUrl != null)
-                    newRes.Documents.MatricCertificateUrl = await SaveFile(student.Documents.MatricCertificateUrl, "Documents", studentId.ToString());
-
-                if (student.Documents.IntermediateCertificateUrl != null)
-                    newRes.Documents.IntermediateCertificateUrl = await SaveFile(student.Documents.IntermediateCertificateUrl, "Documents", studentId.ToString());
-
-                if (student.Documents.BachelorCertificateUrl != null)
-                    newRes.Documents.BachelorCertificateUrl = await SaveFile(student.Documents.BachelorCertificateUrl, "Documents", studentId.ToString());
-
-                if (student.Documents.ExperienceCertificateUrls != null)
-                {
-                    foreach (var file in student.Documents.ExperienceCertificateUrls)
-                    {
-                        var url = await SaveFile(file, "Documents", studentId.ToString());
-                        newRes.Documents.ExperienceCertificateUrls.Add(url);
-                    }
-                }
-
-            }
+            
 
             var response = await _uow.Students.CreateAsync(newRes);
             if (response == null)
@@ -99,31 +61,69 @@ namespace StudentRegisteration.Services
                 
             return new ApiResponse<StudentResponseDTO>(200, mappedStudent);
         }
+        public async Task<ApiResponse<DocumentsResponseDto>> UploadAsync(StudentUploadDto studentDocs)
+        {
+            var newRes = _mapper.Map<Documents>(studentDocs);
+            
 
+            if (studentDocs.Documents != null)
+            {
+                newRes = new Documents
+                {
+                    StudentId = studentDocs.StudentId,
+                    ExperienceCertificateUrls = new List<string>()
+                };
+
+                if (studentDocs.Documents.CNICFrontImageUrl != null)
+                    newRes.CNICFrontImageUrl = await SaveFile(studentDocs.Documents.CNICFrontImageUrl, "Documents", studentDocs.StudentId.ToString());
+
+                if (studentDocs.Documents.CNICBackImageUrl != null)
+                    newRes.CNICBackImageUrl = await SaveFile(studentDocs.Documents.CNICBackImageUrl, "Documents", studentDocs.StudentId.ToString());
+                
+                if (studentDocs.Documents.MatricCertificateUrl != null)
+                    newRes.MatricCertificateUrl = await SaveFile(studentDocs.Documents.MatricCertificateUrl, "Documents", studentDocs.StudentId.ToString());
+
+                if (studentDocs.Documents.IntermediateCertificateUrl != null)
+                    newRes.IntermediateCertificateUrl = await SaveFile(studentDocs.Documents.IntermediateCertificateUrl, "Documents", studentDocs.StudentId.ToString());
+
+                if (studentDocs.Documents.BachelorCertificateUrl != null)
+                    newRes.BachelorCertificateUrl = await SaveFile(studentDocs.Documents.BachelorCertificateUrl, "Documents", studentDocs.StudentId.ToString());
+
+                if (studentDocs.Documents.ExperienceCertificateUrls != null)
+                {
+                    foreach (var file in studentDocs.Documents.ExperienceCertificateUrls)
+                    {
+                        var url = await SaveFile(file, "Documents", studentDocs.StudentId.ToString());
+                        newRes.ExperienceCertificateUrls.Add(url);
+                    }
+                }
+            }
+            if (studentDocs.ProfileImageUrl != null)
+            {
+                newRes.ProfileImageUrl = await SaveFile(studentDocs.ProfileImageUrl, "ProfileImages", studentDocs.StudentId.ToString());
+            }
+
+            var response = await _uow.Students.UploadDocsAsync(newRes);
+            if (response == null)
+                return new ApiResponse<DocumentsResponseDto>(500, "No Response from Server.");
+
+            var mappedDocs = _mapper.Map<DocumentsResponseDto>(response);
+            return new ApiResponse<DocumentsResponseDto>(200, mappedDocs);
+
+        }
 
         //Update
         public async Task<ApiResponse<StudentResponseDTO>> UpdateAsync(Guid id, StudentCreateDTO student)
-        {
+        { 
             var myStudent = await _uow.Students.GetById(id);
-
-            if (myStudent == null)
+            var response = await _uow.Students.UpdateAsync(myStudent);
+            if(response == null)
             {
-                return new ApiResponse<StudentResponseDTO>(404, "Student not found.");
+                return new ApiResponse<StudentResponseDTO>(500, "No Response from Server.");
             }
+            var mappedStudent = _mapper.Map<StudentResponseDTO>(response);
 
-            _mapper.Map(student, myStudent);
-
-            
-            var responseEntity = await _uow.Students.UpdateAsync(myStudent);
-
-            if (responseEntity == null)
-            {
-                return new ApiResponse<StudentResponseDTO>(500, "Update failed or no response from server.");
-            }
-
-            var mappedStudent = _mapper.Map<StudentResponseDTO>(responseEntity);
-
-            return new ApiResponse<StudentResponseDTO>(200, mappedStudent);
+            return new ApiResponse<StudentResponseDTO>(200, mappedStudent); 
         }
 
         // Delete

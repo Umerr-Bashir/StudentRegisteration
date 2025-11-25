@@ -16,7 +16,7 @@ namespace StudentRegisteration.DTOs.StudentDTO
         public DateOnly CNICExpiry { get; set; }
         public bool isDeleted { get; set; }
 
-        public string ProfileImageUrl { get; set; }
+        //public string ProfileImageUrl { get; set; }
 
         public AddressDto Address { get; set; }
         public ContactDto Contact { get; set; }
@@ -26,8 +26,11 @@ namespace StudentRegisteration.DTOs.StudentDTO
         public List<EducationDto> Education { get; set; }
         public List<WorkExperienceDto> WorkExperience { get; set; }
     }
+
     public class DocumentsResponseDto
     {
+        public Guid Id { get; set; }
+        public string ProfileImageUrl { get; set; }
         public string CNICFrontImageUrl { get; set; } 
         public string CNICBackImageUrl { get; set; }
         public string MatricCertificateUrl { get; set; }

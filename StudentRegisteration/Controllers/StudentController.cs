@@ -48,11 +48,29 @@ namespace StudentRegisteration.Controllers
         }
 
         [HttpPost("CreateStudent")]
-        public async Task<ActionResult<ApiResponse<StudentResponseDTO>>> CreateStudent(StudentCreateDTO student)
+        public async Task<ActionResult<ApiResponse<StudentResponseDTO>>> CreateStudent([FromBody] StudentCreateDTO student)
         {
             if (student != null)
             {
                 var response = await _studentService.CreateAsync(student);
+                if (response.StatusCode != 200)
+                {
+                    return StatusCode((int)response.StatusCode, response);
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("Invalid Input.");
+            }
+        }
+
+        [HttpPost("UploadDocuments")]
+        public async Task<ActionResult<ApiResponse<DocumentsResponseDto>>> UploadDocuments([FromForm] StudentUploadDto document)
+        {
+            if (document != null)
+            {
+                var response = await _studentService.UploadAsync(document);
                 if (response.StatusCode != 200)
                 {
                     return StatusCode((int)response.StatusCode, response);
@@ -99,6 +117,27 @@ namespace StudentRegisteration.Controllers
                 return BadRequest("Invalid Input.");
             }
         }
+
+        [HttpGet("download/{*filePath}")]
+        public IActionResult DownloadFile(string filePath)
+        {
+            filePath = filePath.TrimStart('/'); 
+
+            var fullPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                filePath
+            );
+
+            if (!System.IO.File.Exists(fullPath))
+                return NotFound();
+
+            var fileName = Path.GetFileName(fullPath);
+
+            return PhysicalFile(fullPath, "application/octet-stream", fileName);
+        }
+
+
 
     }
 }

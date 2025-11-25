@@ -1,4 +1,6 @@
-﻿namespace StudentRegisteration.DTOs.StudentDTO
+﻿using StudentRegisteration.Models;
+
+namespace StudentRegisteration.DTOs.StudentDTO
 {
     public class StudentCreateDTO
     {
@@ -11,14 +13,23 @@
         public string Nationality { get; set; }
         public string CNIC { get; set; }
         public DateOnly CNICExpiry { get; set; }
-        public IFormFile ProfileImageUrl { get; set; }
+        //public string ProfileImageUrl { get; set; }
         public AddressDto Address { get; set; }
         public ContactDto Contact { get; set; }
         public GuardianDto Guardian { get; set; }
         public EmergencyContactDto Emergency { get; set; }
-        public DocumentsCreateDto Documents { get; set; }
-        public List<EducationDto> Education { get; set; }
+        //public DocumentsCreateDto Documents { get; set; }
+        public List<EducationDto> Education { get; set; } 
         public List<WorkExperienceDto> WorkExperience { get; set; }
+    }
+    public class StudentUploadDto
+    {
+
+        public Guid StudentId { get; set; }
+        public IFormFile ProfileImageUrl { get; set; }
+
+        public DocumentsCreateDto Documents { get; set; }
+
     }
     public class EmergencyContactDto {
         public string EmergencyContactName { get; set; }
@@ -77,12 +88,12 @@
     }
     public class DocumentsCreateDto
     {
-        public IFormFile CNICFrontImageUrl { get; set; }
-        public IFormFile CNICBackImageUrl { get; set; }
-        public IFormFile MatricCertificateUrl { get; set; }
-        public IFormFile IntermediateCertificateUrl { get; set; }
-        public IFormFile BachelorCertificateUrl { get; set; }
-        public List<IFormFile> ExperienceCertificateUrls { get; set; }
+        public IFormFile? CNICFrontImageUrl { get; set; }
+        public IFormFile? CNICBackImageUrl { get; set; }
+        public IFormFile? MatricCertificateUrl { get; set; }
+        public IFormFile? IntermediateCertificateUrl { get; set; }
+        public IFormFile? BachelorCertificateUrl { get; set; }
+        public List<IFormFile?> ExperienceCertificateUrls { get; set; }
 
     }
 
